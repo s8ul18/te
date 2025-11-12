@@ -1,0 +1,76 @@
+
+
+    !pip install mlxtend
+
+--------------------------------------------------------------------------------------   
+    import pandas as pd
+    import csv
+    from mlxtend.preprocessing import TransactionEncoder
+    from mlxtend.frequent_patterns import apriori, association_rules
+
+    dataset = []
+    with open ('Market_basket_Optimisation.csv') as file:
+        reader = csv.reader(file, delimiter=',')
+        for row in reader:
+             dataset += [row]
+
+    #Show the entrybetween [1-10]
+    dataset[1:10]
+
+    [['burgers', 'meatballs', 'eggs'],
+     ['chutney'],
+     ['turkey', 'avocado'],
+     ['mineral water', 'milk', 'energy bar', 'whole wheat rice', 'green tea'],
+     ['low fat yogurt'],
+     ['whole wheat pasta', 'french fries'],
+     ['soup', 'light cream', 'shallot'],
+     ['frozen vegetables', 'spaghetti', 'green tea'],
+     ['french fries']]
+
+    #Making data structured
+    len(dataset)
+
+    7501
+-----------------------------------------------------------------------------------------------------------------------
+    #1]
+    #import transaction encoder that make column of unique item and add T/F if it occurs in particular transaction
+    te =  TransactionEncoder()
+    x = te.fit_transform(dataset)
+
+    x
+
+    array([[False,  True,  True, ...,  True, False, False],
+           [False, False, False, ..., False, False, False],
+           [False, False, False, ..., False, False, False],
+           ...,
+           [False, False, False, ..., False, False, False],
+           [False, False, False, ..., False, False, False],
+           [False, False, False, ..., False,  True, False]], shape=(7501, 120))
+---------------------------------------------------------------------------------------------------------
+    #2]
+    #to get data in structured dataframe/table we use pandas
+    df = pd.DataFrame(x, columns=te.columns_)
+
+    df.head()
+
+----------------------------------------------------------------------------------------------------------
+    #3]
+    #1.Support (print items who occurence i above 0.01 or 1%(here)
+
+    Freq_itemset = apriori(df, min_support=0.01, use_colnames=True)
+
+    Freq_itemset
+
+
+    #Find the rules using confidnece to check it happens with assurance above 25% it have with some combination of item 
+    rules = association_rules(Freq_itemset, metric='confidence',min_threshold=0.40)
+
+    rules = rules[['antecedents','consequents','support','confidence']]
+
+    rules.head()
+
+ ---------------------------------------------------------------------------------------
+
+    #To get infomation if i want to buys particular item suppose cake
+    rules[rules['antecedents'] == {'cereals'}]
+

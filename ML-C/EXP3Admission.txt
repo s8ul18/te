@@ -1,0 +1,93 @@
+import pandas as pd 
+import seaborn as sns
+
+df = pd.read_csv('Admission_Predict.csv')
+
+df.columns
+
+df.shape
+
+df.head()
+-------------------------------------------------------------------------------------------
+#1]Decision tree to predict whether a student will get admission or not, used binarizer             
+#using binarizer that classfiy data if above 75 percent then admitted=1, else below 75 then not admitted=0
+from sklearn.preprocessing import Binarizer
+bi = Binarizer(threshold=0.75)
+#Take the column chance of Admit, apply a transformation using bi, and store the result as a new column Chance of Admit in the DataFrame
+df['Chance of Admit '] = bi.fit_transform(df[['Chance of Admit ']])
+df.head()
+-------------------------------------------------------------------------------------
+#Input variable
+x = df.drop('Chance of Admit ',axis = 1)
+#Output variable
+y = df['Chance of Admit ']
+
+x
+-------------------------------------------------------------------------------------
+#change datatype of output variable form float --> int
+y = y.astype('int')
+
+y
+------------------------------------------------------------------------------------
+#Check status of admission in graphical
+sns.countplot(x=y);
+-----------------------------------------------------------------------------------
+#Check status of admission in numerical
+y.value_counts()
+--------------------------------------------------------------------------------------
+#2]Perform data-preparation (Train-Test Split)
+#Cross-validation
+from sklearn.model_selection import train_test_split
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=0, test_size=0.25)
+
+----------------------------------------------------------------------------------------
+#thus 100(25%) will be train and remaning 300(75%) will be used for training purpose
+x_train.shape
+------------------------------------------------------------------------------------
+x_test.shape
+------------------------------------------------------------------------------------------
+#3]Apply Machine learning algorithm
+#Import class from sklearn library
+from sklearn.tree import DecisionTreeClassifier
+classifier = DecisionTreeClassifier(random_state=0)
+---------------------------------------------------------------------------------------
+#pass training data
+classifier.fit(x_train,y_train)
+-------------------------------------------------------------------------------------
+#perform prediciton on the bases of test data
+y_pred = classifier.predict(x_test)
+------------------------------------------------------------------------------------
+#Compare Actual and predicted data so Accuracy can be shown
+result = pd.DataFrame({
+    'actual':y_test,
+    'predicted': y_pred})
+
+result
+-----------------------------------------------------------------------------------
+#4]Evaluate Model
+from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
+from sklearn.metrics import classification_report
+----------------------------------------------------------------------------------
+ConfusionMatrixDisplay.from_predictions(y_test,y_pred)
+
+#outof 59(total)true-->54(actual) are matched, and out of 41(total)false-->36 (acutal) are matched
+
+#Out of 100 data 90 DATA is matched
+------------------------------------------------------------------------------------
+print(classification_report(y_test, y_pred))
+
+#---------------------extra------------------------------
+#  Prediction with new data
+new = [[2,324,107,4,4.0,4.5,8.87,1]]
+classifier.predict(new)[0]
+
+#Plotting tree
+from sklearn.tree import plot_tree
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(15,15))
+plot_tree(classifier, fontsize=10, filled=True, rounded=True);
+
+
+

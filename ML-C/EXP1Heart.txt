@@ -1,0 +1,69 @@
+import pandas as pd
+import sys
+#import the dataset
+df = pd.read_csv('Heart.csv')
+
+df.head()
+------------------------------------------------------------------------------------------------------
+#A]Find the Shape(Rows,Columns)
+df.shape
+--------------------------------------------------------------------------------------------------------
+#B]Find the missing value,1=true thus it adds upto a sum and shows how many missing values does a particular column contains
+df.isnull().sum()
+--------------------------------------------------------------------------------------
+#C]Find data types of each column
+
+df.dtypes
+------------------------------------------------------------------------------------------
+#D]To find the Zero's:
+df == 0
+
+df[df == 0].count()
+-----------------------------------------------------------------------------------
+#E]Find mean age of paitent
+df['Age'].mean()
+-------------------------------------------------------------------------------------
+# F]extract only Age, Sex, Chest Pain, RestBP, Chol.
+df[[ 'Age', 'Sex', 'ChestPain', 'RestBP', 'Chol']]
+
+newdf = df[[ 'Age', 'Sex', 'ChestPain', 'RestBP', 'Chol']]
+
+newdf
+---------------------------------------------------------------------------------
+!pip install scikit-learn
+
+from sklearn.model_selection import train_test_split
+
+import pandas as pd
+
+df = pd.read_csv('Heart.csv')
+------------------------------------------------------------------------------
+train, test = train_test_split(df, random_state=0, test_size=0.25)
+
+train.shape
+
+test.shape
+-------------------------------------------------------------------------------
+# For: Accuracy, Precision, Recall, F-1 score
+import numpy as np
+----------------------------------------------------------------------------
+#Creating an array naming Actual and Predicted
+actual = list(np.ones(45)) + list(np.zeros(55))
+
+np.array(actual)
+--------------------------------------------------------------------------
+predicted = list(np.ones(40)) + list(np.zeros(52)) + list(np.ones(8))
+
+np.array(predicted)
+---------------------------------------------------------------------------
+ from sklearn.metrics import ConfusionMatrixDisplay
+
+#Accuracy
+ConfusionMatrixDisplay.from_predictions(actual, predicted)
+--------------------------------------------------------------------------
+from sklearn.metrics import classification_report
+
+print(classification_report(actual, predicted))
+
+
+

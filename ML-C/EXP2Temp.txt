@@ -1,0 +1,98 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+df = pd.read_csv('temperatures.csv')
+
+df
+--------------------------------------------------------------------------------------
+#input data (independent variable)
+x = df['YEAR']
+#Output data (independent variable)
+y = df['ANNUAL']
+--------------------------------------------------------------------------------------
+#Changes figures size(Width,Length(in inches))
+plt.figure(figsize=(16,9))
+plt.title('Temperature Plot of India')
+plt.xlabel('Year')
+plt.ylabel('Annual average Temperature')
+#plot points on co-ordinate(x,y)
+plt.scatter(x,y)
+---------------------------------------------------------------------------------------
+x.shape
+-------------------------------------------------------------------------------------
+#we need to reshape it as it don't have column
+# we convert x into array
+x = x.values
+-----------------------------------------------------------------------------------
+# reshape it by adding column
+x = x.reshape(117,1)
+x.shape
+=====================================================================================
+#A] Apply Linear Regression using suitable library function and predict the Month
+# wise temperature
+#Import class of linear regression from sklearn 
+from sklearn.linear_model import LinearRegression
+---------------------------------------------------------------------------
+#Making object of class of it can be use in:
+regressor = LinearRegression()
+------------------------------------------------------------------------
+# use fit method to train algorithm
+regressor.fit(x,y)
+--------------------------------------------------------------------------
+#slope y=mx+c M*
+regressor.coef_
+-------------------------------------------------------------------------
+#C=y-intercept
+regressor.intercept_
+---------------------------------------------------------------------
+#To predict value of Average temp from particular year
+regressor.predict([[2024]])
+-----------------------------------------------------------------------
+regressor.predict([[2055]])
+-----------------------------------------------------------------------
+regressor.predict([[1995]])
+-----------------------------------------------------------------------------
+predicted = regressor.predict(x)
+--------------------------------------------------------------------------
+#Predicted value
+predicted
+-----------------------------------------------------------------------
+#Actual Value
+y
+================================================================================
+#B]Assessthe performance of regression models using MSE, MAE and R-Square 
+#metrics
+#MAE mean absolute error 
+np.mean(abs(y - predicted))
+#OR (By importing mae)
+#from sklearn.metrics import mean_absolute_error
+#mean_absolute_error(y,predicted)
+-------------------------------------------------------------------------------
+#MSE Mean square error
+np.mean((y-predicted)**2)
+##OR (By importing mse)
+#from sklearn.metrics import mean_squared_error
+#mean_squared_error(y,predicted)
+---------------------------------------------------------------------------
+#R-Square metrics error (show linearity in data )
+from sklearn.metrics import r2_score
+r2_score(y,predicted)
+#OR 
+#regressor.score(x,y)
+=============================================================================
+#C]Visualize simple regression model
+plt.figure(figsize=(16,9))
+plt.title('Temperature Plot of India')
+plt.xlabel('Year')
+plt.ylabel('Annual average Temperature')
+#PLOT actual values
+plt.scatter(x,y,label='actual',color='r')
+#PLOT LINE FORM THE PREDICTED VALUES
+plt.plot(x, predicted, label = 'predicted',color='y')
+#define which color denoted what value in box
+plt.legend()
+
+
+
